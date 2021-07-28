@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.gemography.models.Information;
 
-public interface ApiService {
-	public List<String> getLanguages();
-	
+public interface ApiInformationsService {
+	public List<Information> getInformationForEveryLang();
 }

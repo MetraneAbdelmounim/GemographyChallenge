@@ -3,25 +3,19 @@ package com.gemography.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gemography.models.Information;
-import com.gemography.services.ApiService;
+import com.gemography.services.ApiInformationsService;
 
 @RestController()
-public class ReposController {
+public class ReposInfosController {
 	@Autowired
-	private ApiService apiService;
+	private ApiInformationsService apiInfoService;
 	
-	@GetMapping("api/v1/languages")
-	
-	private List<String> getLanguagesFromApi(){
-	
-		return apiService.getLanguages(); 
+	@GetMapping("api/v1/informations")
+	private List<Information> getInformationForEveryLanguage(){
+		return apiInfoService.getInformationForEveryLang();
 	}
-
-	
-
 }
