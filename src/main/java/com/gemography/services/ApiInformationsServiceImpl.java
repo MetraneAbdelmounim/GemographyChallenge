@@ -1,6 +1,7 @@
 package com.gemography.services;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import com.gemography.models.Information;
 import com.gemography.models.Repos;
 import com.gemography.models.Response;
+
 @Service
 public class ApiInformationsServiceImpl implements ApiInformationsService{
 	@Autowired
@@ -24,41 +26,35 @@ public class ApiInformationsServiceImpl implements ApiInformationsService{
 	private String apiUrl;
 
 	@Override
-	public List<Information> getInformationForEveryLang() {
-		List<Information> results = new ArrayList<Information>();
-		Map<String, Information> map = new  HashMap<String, Information>();
+	public Information getInformationForEveryLang(String language) {
+
 		String fullApiUrl= apiUrl+dateService.getCorrectDay();
-		
+		//get the body response from api of github
 		ResponseEntity<Response> response
 		  = restTemplate.getForEntity(fullApiUrl, Response.class);
 		
 		
-		return getInformations(response.getBody().getItems());
+		return getInformations(response.getBody().getItems(),language);
 	}
 	
-	private List<Information> getInformations(List<Repos> repos){
+	private Information getInformations(List<Repos> repos,String language){
 		
-		List<Information> results = new ArrayList<Information>();
-		Map<String, Information> map = new  HashMap<String, Information>();
+		Information result = new Information();
+		result.setItems(new ArrayList<Repos>());
+		result.setLanguage(language);
+		result.setNumberOfRepos(0);
+	
 		for(Repos item : repos) {
 			String currentLang=item.getLanguage();
-			if(!map.containsKey(item.getLanguage())){
-				ArrayList<Repos> items = new ArrayList<Repos>();
-				items.add(item);
-				map.put(item.getLanguage(), new Information(item.getLanguage(), 1 ,items ) );
-			}
-			else {
-				Information currentInformation = map.get(currentLang);
-				int numberOfrepoCurrent = currentInformation.getNumberOfRepos();
-				currentInformation.setNumberOfRepos(numberOfrepoCurrent+1);
-				List<Repos> currentRepos = currentInformation.getItems();
-				currentRepos.add(item);
-				currentInformation.setItems(currentRepos);
-				map.replace(currentLang,currentInformation);
+			if(currentLang!=null && currentLang.equals(language)) {
+				result.setNumberOfRepos(result.getNumberOfRepos()+1);
+				List<Repos> currentRespos = result.getItems();
+				currentRespos.add(item);
+				result.setItems(currentRespos);
 			}
 		}
-		results.addAll(map.values());
-		return results;
+
+		return result;
 	}
 	
 }

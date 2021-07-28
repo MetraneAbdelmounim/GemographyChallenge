@@ -35,6 +35,7 @@ public class ApiServiceImpl implements ApiService{
 	public List<String> getLanguages() {
 		
 		String fullApiUrl= apiUrl+dateService.getCorrectDay();
+		//get response from api of github
 		ResponseEntity<Response> response
 		  = restTemplate.getForEntity(fullApiUrl, Response.class);
 		
@@ -43,14 +44,17 @@ public class ApiServiceImpl implements ApiService{
 	}
 	
 	private List<String> removeDuplicateLang(List<Repos> items){
+		//i'm using map to reduce the complexity of searching languages
 		Set<String> langSet = new HashSet<String>();
 		
 		for(Repos lang : items) {
 			String currentlang = lang.getLanguage();
+			//remove duplicate language
 			if(!langSet.contains(currentlang) && currentlang!=null) {
 				langSet.add(currentlang);
 			}
 		}
+		//convert set to array list
 		List<String> arrayLanguages = new ArrayList<String>();
 		arrayLanguages.addAll(langSet);
 		return arrayLanguages;
